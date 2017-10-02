@@ -1,29 +1,25 @@
-# *Robot Fun Police*
+# *Ultimate Blob Tag*
 
-*Robot Fun Police* is *Jordan Tick*'s implementation of [*Robot Fun Police*](http://graphics.cs.cmu.edu/courses/15-466-f17/game2-designs/jmccann) for game2 in 15-466-f17.
+*Ultimate Blob Tag* is *Jordan Tick*'s implementation of [*Ultimate Blob Tag*](http://graphics.cs.cmu.edu/courses/15-466-f17/game3-designs/jrtick) for game3 in 15-466-f17.
 
-![alt text](https://raw.githubusercontent.com/jrtick/15-466-f17-base2/master/screenshots/screenshot.png)
+![alt text](https://raw.githubusercontent.com/jrtick/15-466-f17-base3/master/screenshots/screenshot.png)
 
 ## Asset Pipeline
 
-The assets used for this game are in models/robot.blend. They are processed via the blender python api into byte 'blob' files that list out the meshes' vertices, normals, and colors.
-
-Hierarchy is set in main.cpp by parenting transforms to their parent transform.
+The assets used for this game are in models/human.blend. They are processed via the blender python api into byte 'blob' files that list out the meshes' vertices, normals, and colors.
+Hierarchy is set in player.cpp by parenting the head/arm transforms to the body transform.
 
 ## Architecture
 
-There is a struct of rotations that describes the state of the robot arm. It can be manipulated through ('a','s'),('w','e'),('z','x'),and ('d', 'c').
+The player is moved via WSAD and can extend their arms forward by pressing space. I keep tracking of the body's rotation due to velocity as well as the rotation of the arms. This way, I can have an accurate collider for all parts of the body and can check if anyone's arm has touched someone's body to make them tagged. This is all taken care of in the Player class.
 
-There is a class for balloons. When all balloons instantiated are set to the state 'Gone', the game is over. Until then, the balloon positions are stepped forward by their velocities. Collision between robot needle and balloon was determined by instantiating a small cube at the tip of the needle such that checking the distance between this cube and the balloon centers determines collision.
+Score is based on how long you stay untagged for AND how many people you tag. The idea was that surviving for two minutes should be about the same score as if the original tagger were to take everyone. Taggers have a slight speed boost over non-taggers.
 
 ## Reflection
 
-It was a little difficult to add vertex colors into the game. At one point, a struct string I originally had as "v3n3c4" was packed to be 8 chars instead of 6. To combat this, I just left it as "v3n3" which correctly packed to 4.
+The game design for this was pretty straightforward. I had to look up how to pass uniforms into the GL shaders so that shirt colors would change when people were tagged and I had to draw out collision detection for cylinders to understand how to code it.
 
-The balloon and robot logic was simple! Editing the source code for the shaders was cool. If I was doing it again, I'd try to get more familiar with the blender API and set hierarchy into the blob file. 
-
-My computer didn't seem to cooperate with the SDL keysyms for period and comma, which is why I switched to using letter keys instead. That was my only issue with the design doc!
-
+The philosophy for the AI is that 1) taggers should chase the closest tagee and 2) tagees should move away from where all the taggers are (opposite the distance-weighted average of their positions). I pretended that the boundaries of the board were also taggers so that tagees would not run out of bounds.
 
 # About Base2
 
