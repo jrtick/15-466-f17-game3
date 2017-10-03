@@ -12,8 +12,8 @@ float Player::headRadius = 1;
 glm::vec3 Player::left_arm_offset = glm::vec3(1.8,0,0.6);	
 glm::vec3 Player::right_arm_offset = glm::vec3(-1.8,0,0.6);
 glm::vec3 Player::head_offset = glm::vec3(0,2.66,0);
-glm::vec2 Player::minPos = glm::vec2(-50,-50);
-glm::vec2 Player::maxPos = glm::vec2(50,50);
+glm::vec2 Player::minPos = glm::vec2(-100.f,-100.f);
+glm::vec2 Player::maxPos = glm::vec2(100.f,100.f);
 
 /*********** COLLISION FUNCTIONS *****************/
 bool collision(Sphere* sphere1,Sphere* sphere2){
@@ -21,7 +21,7 @@ bool collision(Sphere* sphere1,Sphere* sphere2){
 	return dist <= (sphere1->radius+sphere2->radius);
 }
 
-//ASSUMES Z is height
+//ASSUMES Z is height and cylinders are aligned to z axis
 bool collision(Cylinder* cylinder1,Cylinder* cylinder2){
 	float dist = glm::length(cylinder1->center-cylinder2->center);
 	bool mayCollide = (dist <= (cylinder1->radius+cylinder2->radius));

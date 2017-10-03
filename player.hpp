@@ -43,7 +43,7 @@ public:
 	glm::vec2 vel = glm::vec2(0,0);
 	glm::vec2 accel = glm::vec2(0,0);
 	
-	int score = 0;
+	float score = 0;
 	float accel_mag = 50;
 	float max_speed = 50;
 	float walking_dur=0;//keep track to simulate bobbing
@@ -81,7 +81,7 @@ public:
 	}
 	bool tagged(Player* player){
 		if(tagger && glm::length(player->shirtColor-shirtColor)>0.01f){
-			score += 10;
+			score += 30;
 			player->shirtColor = shirtColor;
 			player->tagger = true;
 			colorsDirty = true;
@@ -115,6 +115,7 @@ public:
 					sumweights += weight;
 				}
 			}
+			/* //this wasn't working for some reason??
 			for(int i=0;i<4;i++){ //pretend corners are taggers so players don't run off board
 				glm::vec2 corner1,corner2;
 				switch(i){
@@ -135,19 +136,19 @@ public:
 					corner2 = minPos;
 				}
 				for(int detail=0;detail<16;detail++){
-					float val = detail/float(16);
-					glm::vec2 curPt = corner1*(1.f-val)+corner2*val;
+					float val = ((float)detail)*0.0625f; //div by 16
+					glm::vec2 curPt = corner1*(1.f-val)+corner2*val; //interp
 					float weight = 1/pow(glm::length(curPt-pos),2);
 					weightedPos += curPt*weight;
 					sumweights += weight;
 				}
-			}
+			}*/
 			weightedPos /= sumweights;
 			accel = -glm::normalize(weightedPos-pos);
 		}
 	}
 	void update(float elapsed){
-		if(!tagger) score += int(elapsed*100);
+		if(!tagger) score += elapsed;
 		walking_dur += elapsed;
 		
 		//calculate physics
@@ -157,6 +158,13 @@ public:
 		if(speed>max_speed){
 			vel *= max_speed/speed;
 			speed = max_speed;
+		}
+
+		glm::vec2 newPos = pos + disp;
+		if(newPos.x>maxPos.x || newPos.x<minPos.x ||
+		   newPos.y>maxPos.y || newPos.y<minPos.y){
+			vel = glm::vec2();
+			return;
 		}
 		
 

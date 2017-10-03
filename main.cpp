@@ -20,24 +20,11 @@
 
 #define RANDOM() (((float)rand())/RAND_MAX)
 
-//TODO: fix AI movement.
-
 static GLuint compile_shader(GLenum type, std::string const &source);
 static GLuint link_program(GLuint vertex_shader, GLuint fragment_shader);
 
-#define NUM_PLAYERS 10 //at least 2 for you and opponent is necessary
-#define NUM_PLAYERS_STR "10" //it's a preprocess thing sorry
-
-#define CLAMP(x,m,M) (((x)<m)? m : (((x)>M)? M : x))
-glm::vec3 hsv2rgb(glm::vec3 c)
-{//from https://www.laurivan.com/rgb-to-hsv-to-rgb-for-shaders/
-	glm::vec3 p = 6.f*glm::vec3(c.x,c.x>0.33f? c.x-0.33f : c.x+0.66f,c.x>0.66f? c.x-0.66f : c.x+0.33f)-3.f;
-	if(p.x<0) p.x *= -1.f;
-	if(p.y<0) p.y *= -1.f;
-	if(p.z<0) p.z *= -1.f;
-	p = glm::vec3(CLAMP(p.x-1.f,0,1),CLAMP(p.y-1.f,0,1),CLAMP(p.z-1.f,0,1));
-	return c.z*((1.f-c.y)+p*c.y);
-}
+#define NUM_PLAYERS 5 //at least 2 for you and opponent is necessary
+#define NUM_PLAYERS_STR "5" //it's a preprocess thing sorry
 
 int main(int argc, char **argv) {
 	srand(time(0));
@@ -234,7 +221,7 @@ int main(int argc, char **argv) {
 	//setup players
 	Player players[NUM_PLAYERS];
 	for(int i=0;i<NUM_PLAYERS;i++){
-		glm::vec3 skinColor = hsv2rgb(glm::vec3(0.48f,0.59f,0.33f+0.66f*RANDOM()));
+		glm::vec3 skinColor = glm::vec3(RANDOM(),RANDOM(),RANDOM());
 		glm::vec3 shirtColor = glm::vec3(RANDOM(),RANDOM(),RANDOM());
 		glm::vec2 pos = glm::vec2(80*RANDOM()-40,80*RANDOM()-40);
 		players[i] = Player(pos,shirtColor,skinColor);
@@ -363,29 +350,29 @@ int main(int argc, char **argv) {
 			bool colliding[NUM_PLAYERS] = {false};
 			for(int i=0;i<NUM_PLAYERS;i++){
 				Player* curPlayer = &players[i];
-				if(colliding[i]) continue;
+				//if(colliding[i]) continue;
 				for(int j=i+1;j<NUM_PLAYERS;j++){
-					if(colliding[j]) continue;
+					//if(colliding[j]) continue;
 
 					Player::Collision col;
 					if((col=curPlayer->collides(&players[j]))!=Player::Collision::None){
 						switch(col){
 						case Player::Collision::LeftBody:
 						case Player::Collision::RightBody:
-							if(!curPlayer->colliding && !players[j].colliding){
+							//if(!curPlayer->colliding && !players[j].colliding){
 								if(curPlayer->tagged(&players[j]))
 									printf("%d tagged %d!\n",i,j);
-							}
+							//}
 							break;
 						case Player::Collision::BodyLeft:
 						case Player::Collision::BodyRight:
-							if(!curPlayer->colliding && !players[j].colliding){
+							//if(!curPlayer->colliding && !players[j].colliding){
 								if(players[j].tagged(curPlayer))
 									printf("%d tagged %d!\n",j,i);
-							}
+							//}
 							break;
 						default:
-							printf("non-lethal hit\n");
+							break;
 						}
 						//stop both players
 						if(!curPlayer->colliding && !players[j].colliding){
@@ -411,12 +398,12 @@ int main(int argc, char **argv) {
 
 				if(gameover){
 					printf("Game over!\n");
+					for(int i=0;i<NUM_PLAYERS;i++) printf("Player %d's score: %.2f\n",i,players[i].score);
 					should_quit = true;
 				}
 				Player::colorsDirty = false;
 			}
 
-			//TODO: parent cam rotation to model rotation
 			camera.target = glm::vec3(players[0].pos,0);
 			//camera
 			scene.camera.transform.position = camera.radius * glm::vec3(

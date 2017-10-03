@@ -11,15 +11,15 @@ Hierarchy is set in player.cpp by parenting the head/arm transforms to the body 
 
 ## Architecture
 
-The player is moved via WSAD and can extend their arms forward by pressing space. I keep tracking of the body's rotation due to velocity as well as the rotation of the arms. This way, I can have an accurate collider for all parts of the body and can check if anyone's arm has touched someone's body to make them tagged. This is all taken care of in the Player class.
+The player is moved via WSAD and can extend their arms forward by pressing space. The camera can be rotated with the mouse and zoomed in/out with tab/Lshift. I keep track of the body's rotation so it faces movement direction as well as the rotation of the arms with respect to the body. This way, I can have an accurate collider for all parts of the body and can check if anyone's arm has touched someone's body to make them tagged. This is all taken care of in the Player class.
 
-Score is based on how long you stay untagged for AND how many people you tag. The idea was that surviving for two minutes should be about the same score as if the original tagger were to take everyone. Taggers have a slight speed boost over non-taggers.
+Score is based on how long you stay untagged for AND how many people you tag. The idea was that surviving for two minutes should be about the same score as if the original tagger were to tag everyone.
 
 ## Reflection
 
-The game design for this was pretty straightforward. I had to look up how to pass uniforms into the GL shaders so that shirt colors would change when people were tagged and I had to draw out collision detection for cylinders to understand how to code it.
+The game design for this was pretty straightforward. I had to look up how to pass uniforms into the GL shaders so that shirt colors would change when people were tagged and I had to draw out collision detection for cylinders and spheres to understand how to code it.
 
-The philosophy for the AI is that 1) taggers should chase the closest tagee and 2) tagees should move away from where all the taggers are (opposite the distance-weighted average of their positions). I pretended that the boundaries of the board were also taggers so that tagees would not run out of bounds.
+The philosophy for the AI is that 1) taggers should chase the closest tagee and 2) tagees should move away from where all the taggers are (opposite the distance-weighted average of their positions). I tried to pretend that the boundaries of the board were also taggers so that tagees would not run out of bounds, but this was unsuccessful for some reason. I must've had a bug somewhere?
 
 # About Base2
 
