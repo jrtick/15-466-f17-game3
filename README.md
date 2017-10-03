@@ -2,7 +2,7 @@
 
 *Ultimate Blob Tag* is *Jordan Tick*'s implementation of [*Ultimate Blob Tag*](http://graphics.cs.cmu.edu/courses/15-466-f17/game3-designs/jrtick) for game3 in 15-466-f17.
 
-![alt text](https://raw.githubusercontent.com/jrtick/15-466-f17-base3/master/screenshots/screenshot.png)
+![alt text](https://raw.githubusercontent.com/jrtick/15-466-f17-game3/master/screenshots/screenshot.png)
 
 ## Asset Pipeline
 
